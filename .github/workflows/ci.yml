@@ -1,0 +1,30 @@
+name: ML CI
+on:
+ push:
+ branches: [main]
+ pull_request:
+jobs:
+ build-and-train:
+ runs-on: ubuntu-latest
+ steps:
+ - name: Get the code
+ uses: actions/checkout@v4
+ - name: Install Python
+ uses: actions/setup-python@v5
+ with:
+ python-version: "3.11.0"
+ cache: pip
+ - name: Install dependencies
+ run: pip install -r requirements.txt
+ - name: Create dataset
+ run: python src/make_dataset.py
+ - name: Preprocess data
+ run: python src/preprocess.py
+ - name: Train model
+ run: python src/train.py
+ - name: Save model as a downloadable artifact
+ uses: actions/upload-artifact@v4
+ with:
+ name: trained-model
+ path: models/
+
